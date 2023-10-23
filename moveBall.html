@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<link rel="stylesheet" href="moveball.css">
+
+</head>
+<body>
+
+<script>
+	var squares = 0;
+	var maxSquares = 20;
+	var squareList = [];
+	var ballWidth = 50;
+	var ballHeight = 50;
+
+
+	function createBall()
+	{
+		var calc1 = Math.random()
+		var calc2 = Math.random()
+
+
+		if (calc1 <= .5)
+			{
+			var calc11 = -1;
+			}
+		else
+			{
+			var calc11 = 1;
+			}
+		if (calc2 <= .5)
+			{
+			var calc2 = -1;
+			}
+		else
+			{
+			var calc2 = 1;
+			}
+		
+		var velocity = (6*Math.random()*calc1) + 2;
+		var velocityY = (6*Math.random()*calc2) + 2;
+		// 
+		var x = Math.floor(window.innerWidth*(Math.random()));
+		var y = Math.floor(window.innerHeight*(Math.random()));
+
+		// create square element add square css to element 
+		var square = document.createElement('div');
+		square.classList.add('square');
+		// update x axis x
+		x = x + velocity;
+		square.style.left = x + 'px';
+		// update y axis x
+		y = y + velocityY;
+		square.style.top = y + 'px';
+
+		square.x = x;
+		square.y = y;
+		square.vx = velocity;
+		square.vy = velocityY;
+		// Starting random color
+		var r = Math.floor(255*(Math.random()));
+		var g = Math.floor(255*(Math.random()));
+		var b = Math.floor(255*(Math.random()));
+		square.style.background = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+		// Put square into array and write square to html
+		squareList.push(square)
+		document.getElementsByTagName('body')[0].appendChild(square);
+		
+		function ranColor()
+		{
+			r = Math.floor(255*(Math.random()));
+			g = Math.floor(255*(Math.random()));
+			b = Math.floor(255*(Math.random()));
+			square.style.background = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+		}
+
+		function travel()
+		{
+			// update x axis x
+			x = x + velocity;
+			square.style.left = x + 'px';
+			// update y axis x
+			y = y + velocityY;
+			square.style.top = y + 'px';
+
+			square.x = x;
+			square.y = y;
+			square.vx = velocity;
+			square.vy = velocityY;
+
+			// square on square collision
+				for (let i = 0; i < squareList.length; i++)
+					{
+					const b = squareList[i];
+					if (b != square)
+						{
+
+						 if (x > b.x && 
+							x < b.x + ballWidth && 
+							y > b.y && 
+							y < b.y + ballHeight)
+
+							{
+								ranColor();
+							if (x <= b.x + ballWidth && x <= b.y + ballHeight)
+								{
+								velocityY = 5;
+								b.vy = -5;
+								velocity = 5;
+								b.vx = -5;
+								}
+							else if (x <= b.x + ballWidth)
+								{
+								velocityY = 5;
+								b.vy = -5;
+								}
+							else if (x <= b.y + ballHeight)
+								{
+								velocity = 5;
+								b.vx = -5;
+								}
+							console.log('collision!');
+							}
+						else if (x + ballWidth > b.x && 
+							x + ballWidth < b.x + ballWidth && 
+							y > b.y && 
+							y < b.y + ballHeight)
+
+							{
+								ranColor();
+							if (x + ballWidth > b.x && x + ballWidth < b.y)
+								{
+								velocityY = 5;
+								b.vy = -5;
+								velocity = -5;
+								b.vx = 5;
+								}
+							else if (x + ballWidth > b.x)
+								{
+								velocityY = 5;
+								b.vy = -5;
+								}
+							else if (x + ballWidth < b.y)
+								{
+								velocity = -5;
+								b.vx = 5;
+								}
+							}
+						else if (x > b.x && 
+							x < b.x + ballWidth && 
+							y + ballHeight > b.y && 
+							y + ballHeight < b.y + ballHeight)
+
+							{
+								ranColor();
+							if (y + ballHeight < b.x + ballWidth && y + ballHeight > b.y)
+								{
+								velocityY = -5;
+								b.vy = 5;
+								velocity = 5;
+								b.vx = -5;
+								}
+							else if (y + ballHeight < b.x + ballWidth)
+								{
+								velocityY = -5;
+								b.vy = 5;
+								}
+							else if (y + ballHeight > b.y)
+								{
+								velocity = 5;
+								b.vx = -5;
+								}
+							}
+						else if (x + ballWidth > b.x && 
+							x + ballWidth < b.x + ballWidth && 
+							y + ballHeight > b.y && 
+							y + ballHeight < b.y + ballHeight)
+
+							{
+								ranColor();
+							if (x + ballWidth && y + ballHeight < b.y && x + ballWidth && y + ballHeight > b.x)
+								{
+								velocity = -5;
+								b.vx = 5;
+								velocityY = -5;
+								b.vy = 5;
+								}
+							else if (x + ballWidth && y + ballHeight < b.y)
+								{
+								velocity = -5;
+								b.vx = 5;
+								}
+							else if (x + ballWidth && y + ballHeight > b.x)
+								{
+								velocityY = -5;
+								b.vy = 5;
+								}
+							}
+						}
+						
+					}
+			// bounce off right side
+			if (x >= window.innerWidth - 50)
+				{
+				velocity = velocity * -1;
+				x = window.innerWidth - 50;
+				ranColor()
+				if (squares < maxSquares)
+					{
+					createBall();
+					squares++;
+					console.log(squares)
+					}
+				}
+			// bounce off left side
+			if (x <= 0)
+				{
+				velocity = velocity * -1;
+				x = 0;
+				ranColor()
+				if (squares < maxSquares)
+					{
+					createBall();
+					squares++;
+					console.log(squares)
+					}
+				}
+			// bounce off bottom side
+			if (y >= window.innerHeight - 50)
+				{
+				velocityY = velocityY * -1;
+				y = window.innerHeight - 50;
+				ranColor()
+				if (squares < maxSquares)
+					{
+					createBall();
+					squares++;
+					console.log(squares)
+					}
+				}
+			// bounce off top side
+			if (y <= 0)
+				{
+				velocityY = velocityY * -1;
+				y = 0;
+				ranColor()
+				if (squares < maxSquares)
+					{
+					createBall();
+					squares++;
+					console.log(squares)
+					}
+				}
+		}
+
+		setInterval(travel, 10);
+	}
+
+createBall();
+</script>
+</body>
+</html>
